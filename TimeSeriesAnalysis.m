@@ -71,14 +71,27 @@ legend('Red Events','Green Events')
 % print('-dpng','-r300',...
 %  'Events2021.png');
 
-%% examine season subtests 
+%% examine season subtests: find mean values of red and green events during the 4 seasons
+% extract seasons by date
 spring = (dates>='2021-01-01' & dates<='2021-03-31'); 
 summer = (dates>='2021-04-01' & dates<='2021-06-30');
 autumn = (dates>='2021-07-01' & dates<='2021-09-30');
 winter = (dates>='2021-10-01' & dates<='2021-12-31');
 
+% create array of seasons to iterate
+seasons = ["spring", "summer", "autumn", "winter"]; % if you'd use ";" instead it's a 4x1 string
+
+% create array for RE and GE for seasons
+
 springREs = find(spring);
 meanSpringREs = mean(springREs,"omitnan");
+
+for i=1:length(seasons)
+    % append mean values to those RE and GE seasons
+    % need to extract i from array
+    fprintf("hello %d \n", i);
+end
+
 
 % write this into a loop
 % for the seasons > calc mean for RE and GEs > write this into arrays >
