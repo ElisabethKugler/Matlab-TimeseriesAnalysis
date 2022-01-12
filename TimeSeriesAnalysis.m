@@ -25,7 +25,23 @@ cNumGEs = length(GEs);
 missingGEs = (365 - cNumGEs);
 fprintf('Number of days with green events: %d \n', cNumGEs);
 
-%% Analyse Averages, Maximum Events, and Change Points
+%% Analyse Mean, Maximum Events, and Change Points
+
+
+
+DateFirst = {'2021-01-01'};
+f = datetime(DateFirst,'InputFormat','yyyy-MM-dd');
+DateLast = {'2021-12-31'};
+l = datetime(DateLast,'InputFormat','yyyy-MM-dd');
+
+year = f:l;
+
+% mean values of events
+meanREs = mean(eventTable{:,2},"omitnan");
+meanGEs = mean(eventTable{:,3},"omitnan");
+
+% maximum events
+maxREs = max(eventTable{:,2});
 
 
 %% Plot red and green events
