@@ -73,15 +73,19 @@ saveas(annualEvents, 'Events2021.png');
 
 %% examine season subtests: find mean values of red and green events during the 4 seasons
 % extract seasons by date
-% Get the month numbers for dates
-monthNum = month(dates(:,1)); 
-spring = ismember(monthNum, [1:3]); 
-summer = ismember(monthNum, [4:6]); 
-autumn = ismember(monthNum, [7:9]); 
-winter = ismember(monthNum, [10:12]); 
+spring = (dates>='2021-01-01' & dates<='2021-03-31'); 
+summer = (dates>='2021-04-01' & dates<='2021-06-30');
+autumn = (dates>='2021-07-01' & dates<='2021-09-30');
+winter = (dates>='2021-10-01' & dates<='2021-12-31');
 
 % create array of seasons to iterate
 seasons = ["spring", "summer", "autumn", "winter"]; % if you'd use ";" instead it's a 4x1 string
+
+% create array for RE and GE for seasons
+
+April2021Dates = dates(spri, :);
+April2021RE = redEvents(monthIdx, :);
+April2021GE = greenEvents(monthIdx, :);
 
 %springREs = find(spring); % that needs to select spring
 %meanSpringREs = mean(springREs,"omitnan");
@@ -99,14 +103,16 @@ end
 
 
 %% Subset Test - April 2021 data
+% Get the month numbers for dates
+monthNum = month(dates(:,1)); 
 % Logical index of rows in April
-monthIdxApril = ismember(monthNum, [4]); 
+monthIdx = ismember(monthNum, [4]); 
 % Extract your data for these months
 % April2021Dates = find(dates>='2021-04-01' & dates<='2021-04-30'); %
 % 91-120
-April2021Dates = dates(monthIdxApril, :);
-April2021RE = redEvents(monthIdxApril, :);
-April2021GE = greenEvents(monthIdxApril, :);
+April2021Dates = dates(monthIdx, :);
+April2021RE = redEvents(monthIdx, :);
+April2021GE = greenEvents(monthIdx, :);
 
 %% Plot red and green events in April 2021
 figure('units','normalized','outerposition',[0 0 1 1]);
