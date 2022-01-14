@@ -97,7 +97,7 @@ for i=1:length(seasons)
 
 %    A(i) = A(i) + ia_time(i);
 
-    fprintf(" %d mean is %d \n", seaons(i), meanVal);
+  %  fprintf(" %d mean is %d \n", seaons(i), meanVal);
 end
 
 
@@ -117,7 +117,7 @@ April2021RE = redEvents(monthIdxApril, :);
 April2021GE = greenEvents(monthIdxApril, :);
 
 %% Plot red and green events in April 2021
-figure('units','normalized','outerposition',[0 0 1 1]);
+aprilEvents = figure('units','normalized','outerposition',[0 0 1 1]);
 % Set the font size for the figure
 font_size = 24;
 set(0, 'DefaultAxesFontSize', font_size);
@@ -138,7 +138,7 @@ ylabel('Duration [minutes]')
 legend('Red Events','Green Events')
 
 % save image
-saveas(annualEvents, 'EventsApril2021.png');
+saveas(aprilEvents, 'EventsApril2021.png');
 
 
 %% Examination of filling in missing data 
