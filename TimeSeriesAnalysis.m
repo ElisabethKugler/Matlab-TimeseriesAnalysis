@@ -86,10 +86,18 @@ seasons = ["spring", "summer", "autumn", "winter"]; % if you'd use ";" instead i
 %springREs = find(spring); % that needs to select spring
 %meanSpringREs = mean(springREs,"omitnan");
 
+seasonsMeanVal = [];
+%A(i) = A(i) + ia_time(i) ;
+
 for i=1:length(seasons)
     % append mean values to those RE and GE seasons
     % need to extract i from array
-    fprintf("hello %d \n", i);
+    meanVal = mean(redEvents(i, :));
+    % seasonsMeanVal = seasonsMeanVal + meanVal;
+
+%    A(i) = A(i) + ia_time(i);
+
+    fprintf(" %d mean is %d \n", seaons(i), meanVal);
 end
 
 
