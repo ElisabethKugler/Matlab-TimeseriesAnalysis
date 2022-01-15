@@ -70,6 +70,7 @@ legend('Red Events','Green Events')
 % save image
 saveas(annualEvents, 'Events2021.png');
 
+
 %% examine season subtests: find mean values of red and green events during the 4 seasons
 % extract seasons by date
 % Get the month numbers for dates
@@ -101,7 +102,9 @@ meanGEsYear = [meanGESpring, meanGESummer, meanGEAutumn, meanGEWinter];
 
 %% Make figure with season mean vals plot as scatterplot with magenta and green labelling
 seasonEvents = figure;
-bar([meanREsYear;meanGEsYear].');
+ bar([meanREsYear;meanGEsYear].');
+%b1 = bar(meanREsYear, 'm');
+%b2 = bar(meanGEsYear, 'g');
 
 grid on;
 xticklabels(seasonNames);
@@ -157,36 +160,12 @@ saveas(aprilEvents, 'EventsApril2021.png');
 
 % Interpolate to 1-day
 xq = (min(dates):1:max(dates));
-
-%TODO interp with NANs https://stackoverflow.com/questions/20582106/how-to-use-interp1-with-nan-values
-
-interpREs = interp1(dates, redEvents, xq);
-interpGEs = interp1(dates, greenEvents, xq);
+interpREs = interp1(dates, redEvents, xq, 'spline');
+interpGEs = interp1(dates, greenEvents, xq, 'spline');
 
 %% Make a figure with Interpolated Data
 % can actual datapoints be a different colour to the interpolated ones?
-InterpolAnnualEvents = figure('units','normalized','outerposition',[0 0 1 1]);
-% Set the font size for the figure
-font_size = 24;
-set(0, 'DefaultAxesFontSize', font_size);
-% Set the figure background to be white
-set(gcf,'color','w');
-hold on
 
-p1 = plot(dates, interpREs, 'dm');
-p2 = plot(dates, interpGEs, 'dg');
-
-grid on
-xlim([min(dates) max(dates)]);
-
-title('Time Series of Interpolated Red and Green Events')
-xlabel('Date [DD/MM/YYYY]')
-ylabel('Duration [minutes]')
-
-legend('Red Events','Green Events')
-
-% save image
-saveas(InterpolAnnualEvents, 'InterpolEvents2021.png');
 %% Smoothen Data
 % https://uk.mathworks.com/help/signal/examples/signal-smoothing.html
 % Median Filter:
