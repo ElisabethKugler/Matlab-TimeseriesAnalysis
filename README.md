@@ -1,6 +1,9 @@
 # Matlab-TimeseriesAnalysis
 Code for time series data analysis: data are event data with durations in minutes, called red and green events.
+
 Data are provided as .xlsx with col1: dates, col2; red events, and col3: green events.
+
+Includes a Live Script.
 
 ## Data Exploration:
 - Number of red and green events
