@@ -10,6 +10,7 @@ dates = datetime(eventTable{:,1}, 'InputFormat',infmt);
 redEvents = eventTable{:,2};
 greenEvents = eventTable{:,3};
 
+
 %% Count number of events and how many are missing
 % red events
 [row, column] = find(redEvents>0);
@@ -41,11 +42,6 @@ else
     fprintf('The biggest event was green with %.2f minutes \n', maxGEs);    
 end
 
-% change points
-% TODO - need to explore this more - does this need filled data /continous
-% data? .. 
-% changeRE = ischange(eventTable{:,2}, 'variance');
-
 %% Plot red and green events
 annualEvents = figure('units','normalized','outerposition',[0 0 1 1]);
 % Set the font size for the figure
@@ -55,8 +51,8 @@ set(0, 'DefaultAxesFontSize', font_size);
 set(gcf,'color','w');
 hold on
 
-p1 = plot(dates, redEvents, 'dm');
-p2 = plot(dates, greenEvents, 'dg');
+plot(dates, redEvents, 'dm');
+plot(dates, greenEvents, 'dg');
 
 grid on
 xlim([min(dates) max(dates)]);
@@ -135,8 +131,8 @@ set(0, 'DefaultAxesFontSize', font_size);
 set(gcf,'color','w');
 hold on
 
-p1 = plot(April2021Dates, April2021RE, 'dm');
-p2 = plot(April2021Dates, April2021GE, 'dg');
+plot(April2021Dates, April2021RE, 'dm');
+plot(April2021Dates, April2021GE, 'dg');
 
 grid on
 xlim([min(April2021Dates) max(April2021Dates)]);
@@ -150,18 +146,30 @@ legend('Red Events','Green Events')
 % save image
 saveas(aprilEvents, 'EventsApril2021.png');
 
-
 %% Examination of filling in missing data 
 % how to check whether interpolation even makes sense if there aren't that
 % many events? (e.g. 70 green events)
 
+% call function from different folder
+addpath('./Inpaint_nans/Inpaint_nans/');
+% inpaint_nans from: https://uk.mathworks.com/matlabcentral/fileexchange/4551-inpaint_nans
+filled_redEvents = inpaint_nans(redEvents,5);
+filled_greenEvents = inpaint_nans(greenEvents,5); % green events trail off Dec 2021, similar to interp with interp1 'spline'
+
+% TODO look at inpaint_nans with having to be above 0 - because events
+% cannot be negative
+
+% % Looked at interpolation - but for these data inpaint_nans seems
+% appropriate... maybe because there are too many missing?
 % Interpolate to 1-day
-xq = (min(dates):1:max(dates));
-
-%TODO interp with NANs https://stackoverflow.com/questions/20582106/how-to-use-interp1-with-nan-values
-
-interpREs = interp1(dates, redEvents, xq);
-interpGEs = interp1(dates, greenEvents, xq);
+%xq = (min(dates):1:max(dates));
+% %TODO interp with NANs https://stackoverflow.com/questions/20582106/how-to-use-interp1-with-nan-values
+% % change NaNs to 0 so they'll get interpolated
+% FilledredEvents = fillmissing(redEvents, 'constant', 0);
+% FilledgreenEvents = fillmissing(greenEvents, 'constant', 0);
+% % interpolate with 'linear' - looked at some others
+%interpREs = interp1(dates, filled_redEvents, xq, 'linear');
+%interpGEs = interp1(dates, filled_greenEvents, xq, 'linear');
 
 %% Make a figure with Interpolated Data
 % can actual datapoints be a different colour to the interpolated ones?
@@ -173,8 +181,8 @@ set(0, 'DefaultAxesFontSize', font_size);
 set(gcf,'color','w');
 hold on
 
-p1 = plot(dates, interpREs, 'dm');
-p2 = plot(dates, interpGEs, 'dg');
+plot(dates, filled_redEvents, 'dm');
+plot(dates, filled_greenEvents, 'dg');
 
 grid on
 xlim([min(dates) max(dates)]);
@@ -186,17 +194,82 @@ ylabel('Duration [minutes]')
 legend('Red Events','Green Events')
 
 % save image
-saveas(InterpolAnnualEvents, 'InterpolEvents2021.png');
+saveas(InterpolAnnualEvents, 'InterpolEvents2021_method5.png');
+
 %% Smoothen Data
+% filters need Signal Processing Toolbox to be installed
 % https://uk.mathworks.com/help/signal/examples/signal-smoothing.html
 % Median Filter:
-
-% Gaussian Filter: 
-
+filled_redEventsMedFilt = medfilt1(filled_redEvents,7);
+filled_redEventsMedSmooth = smoothdata(filled_redEvents,7);
 % Savitzky-Golay filtering:
 % https://uk.mathworks.com/help/signal/ref/sgolayfilt.html
+filled_redEventsMedSGolay = sgolayfilt(filled_redEvents,3,7); % order, framelength
 
-%% Make a Figure with Smoothened Data
+% filter green events
+filled_greenEventsMedFilt = medfilt1(filled_greenEvents,7);
+filled_greenEventsMedSmooth = smoothdata(filled_greenEvents,7);
+filled_greenEventsMedSGolay = sgolayfilt(filled_greenEvents,3,7); % order, framelength
+
+%% Make Figure with Smoothened/Filtered Red Data
+SmoothenedR = figure('units','normalized','outerposition',[0 0 1 1]);
+% Set the font size for the figure
+font_size = 24;
+set(0, 'DefaultAxesFontSize', font_size);
+% Set the figure background to be white
+set(gcf,'color','w');
+hold on
+
+p1 = plot(dates, filled_redEvents, '-b');
+p2 = plot(dates, filled_redEventsMedFilt, '-g');
+p3 = plot(dates, filled_redEventsMedSmooth, '-m');
+p4 = plot(dates, filled_redEventsMedSGolay, '-b');
+p1.LineWidth = 1.5;
+p2.LineWidth = 1.5;
+p3.LineWidth = 1.5;
+p4.LineWidth = 1.5;
+
+grid on
+xlim([min(dates) max(dates)]);
+
+title('Time Series of Smoothened Red Events')
+xlabel('Date [DD/MM/YYYY]')
+ylabel('Duration [minutes]')
+
+legend('Red Events','Median Filter [7]', 'Smoothened [7]', 'Savitzky-Golay [7]')
+
+% save image
+saveas(SmoothenedR, 'SmoothenedRedEvents2021.png');
+
+%% Make Figure with Smoothened/Filtered Green Data
+SmoothenedG = figure('units','normalized','outerposition',[0 0 1 1]);
+% Set the font size for the figure
+font_size = 24;
+set(0, 'DefaultAxesFontSize', font_size);
+% Set the figure background to be white
+set(gcf,'color','w');
+hold on
+
+p1 = plot(dates, filled_greenEvents, '-b');
+p2 = plot(dates, filled_greenEventsMedFilt, '-g');
+p3 = plot(dates, filled_greenEventsMedSmooth, '-m');
+p4 = plot(dates, filled_greenEventsMedSGolay, '-b');
+p1.LineWidth = 1.5;
+p2.LineWidth = 1.5;
+p3.LineWidth = 1.5;
+p4.LineWidth = 1.5;
+
+grid on
+xlim([min(dates) max(dates)]);
+
+title('Time Series of Smoothened Green Events')
+xlabel('Date [DD/MM/YYYY]')
+ylabel('Duration [minutes]')
+
+legend('Red Events','Median Filter [7]', 'Smoothened [7]', 'Savitzky-Golay [7]')
+
+% save image
+saveas(SmoothenedG, 'SmoothenedGreenEvents2021.png');
 
 %% Seasonality Analysis
 % does this make sense or would eg be average per quarter be enough?
