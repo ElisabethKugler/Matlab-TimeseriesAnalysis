@@ -40,7 +40,7 @@ cNumGEs = length(GEs);
 missingGEs = (365 - cNumGEs);
 fprintf('Number of days with green events: %d \n', cNumGEs);
 
-%% Analyse Mean, Maximum Events, and Change Points
+%% Analyse Mean and Maximum Events
 % mean values of events
 meanREs = mean(eventTable{:,2},"omitnan");
 meanGEs = mean(eventTable{:,3},"omitnan");
