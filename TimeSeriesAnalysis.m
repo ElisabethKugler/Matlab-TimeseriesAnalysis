@@ -1,6 +1,20 @@
 %%% Code for time series data analysis %%% 
 % data are event data with durations in minutes, red and green events
 
+% Author: Elisabeth Kugler 2021
+% Contact: kugler.elisabeth@gmail.com
+%  
+% BSD 3-Clause License
+% 
+% Copyright (c) [2021], [Elisabeth C. Kugler]
+% All rights reserved.
+% 
+% Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+% 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+% 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+% 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %% Load data
 eventTable = readtable('D:/TimeSeriesEventData.xlsx');
 % Create MATLAB datenumbers from the Excel dates
@@ -266,14 +280,16 @@ title('Time Series of Smoothened Green Events')
 xlabel('Date [DD/MM/YYYY]')
 ylabel('Duration [minutes]')
 
-legend('Red Events','Median Filter [7]', 'Smoothened [7]', 'Savitzky-Golay [7]')
+legend('Green Events','Median Filter [7]', 'Smoothened [7]', 'Savitzky-Golay [7]')
 
 % save image
 saveas(SmoothenedG, 'SmoothenedGreenEvents2021.png');
 
-%% Seasonality Analysis
-% does this make sense or would eg be average per quarter be enough?
+%% Modelling Future Values
+% https://uk.mathworks.com/matlabcentral/fileexchange/74211-11-classical-time-series-forecasting-methods-in-matlab
+% https://uk.mathworks.com/help/ident/ug/time-series-prediction-and-forecasting-for-prognosis.html#d123e69236
+% 1) use Jan-Jun 2021 to model 
+% 2) Jul-Dec 2021 to test which model is the appropriate one
+% 3) then use Jan-Dec with the appropriate model to predict 2022 data
 
-%% Modelling Future Values Possible
-% See: https://uk.mathworks.com/help/ident/examples/timeseries-prediction-and-forecasting-for-prognosis.html for a worked example.
 
